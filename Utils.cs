@@ -18,11 +18,11 @@ namespace RageHelper
 
             foreach (FileInfo file in files)
             {
-                if (CompareFileExtensionWithArray(file.Extension, filter) && 
+                if (CompareFileExtensionWithArray(file.Extension, filter) &&
                     !CompareFilePathWithArray(file.FullName, exclude))
                 {
                     Directory.CreateDirectory(dest);
-                    File.SetAttributes(file.FullName, FileAttributes.Normal);
+
                     file.CopyTo(Path.Combine(dest, file.Name), true);
                 }
             }
@@ -31,15 +31,21 @@ namespace RageHelper
         public static void ClearDirectory(string path)
         {
             if (!Directory.Exists(path))
+            {
                 return;
+            }
 
             var (directories, files) = GetDirectoryEntities(path);
 
             foreach (DirectoryInfo directory in directories)
+            {
                 directory.Delete(true);
+            }
 
             foreach (FileInfo file in files)
+            {
                 file.Delete();
+            }
         }
 
         public static (DirectoryInfo[], FileInfo[]) GetDirectoryEntities(string path)
@@ -51,7 +57,7 @@ namespace RageHelper
 
         public static bool CompareFileExtensionWithArray(string extension, string[] array)
         {
-            StringComparison comparisonType = StringComparison.InvariantCultureIgnoreCase;
+            var comparisonType = StringComparison.InvariantCultureIgnoreCase;
 
             return Array.Exists(array, item => extension.Equals(item, comparisonType));
         }

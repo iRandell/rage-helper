@@ -8,13 +8,13 @@ namespace RageHelper
     class FileWatcher
     {
         string Root;
-        ChangeListener Listener;
+        ChangeListenerDelegate Listener;
         string[] Filter;
         string[] Exclude;
 
         Dictionary<string, DateTime> FilesLastWriteTime = new Dictionary<string, DateTime>();
 
-        public FileWatcher(string directoryPath, ChangeListener listener, string[] filter, string[] exclude)
+        public FileWatcher(string directoryPath, ChangeListenerDelegate listener, string[] filter, string[] exclude)
         {
             Root = directoryPath;
             Listener = listener;
@@ -35,11 +35,17 @@ namespace RageHelper
             var (directories, files) = Utils.GetDirectoryEntities(path);
 
             foreach (DirectoryInfo directory in directories)
+            {
                 WatchDirectoryFiles(directory.FullName);
+            }
 
             foreach (FileInfo file in files)
+            {
                 if (IsSuitableFile(file))
+                {
                     FilesLastWriteTime.Add(file.FullName, file.LastWriteTime);
+                }
+            }
         }
 
         bool IsSuitableFile(FileInfo file)
@@ -77,7 +83,9 @@ namespace RageHelper
             foreach (DirectoryInfo directory in directories)
             {
                 if (AreDirectoryFilesChanged(directory.FullName))
+                {
                     return true;
+                }
             }
 
             foreach (FileInfo file in files)
@@ -108,7 +116,9 @@ namespace RageHelper
             foreach (var entry in FilesLastWriteTime)
             {
                 if (!File.Exists(entry.Key))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -120,6 +130,6 @@ namespace RageHelper
             WatchDirectoryFiles(Root);
         }
 
-        public delegate void ChangeListener();
+        public delegate void ChangeListenerDelegate();
     }
 }
